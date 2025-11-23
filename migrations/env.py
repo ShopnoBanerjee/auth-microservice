@@ -8,6 +8,10 @@ from alembic import context
 from app.database.base import Base
 from app.core.config import settings
 
+import pkgutil, importlib, app.models as _models_pkg
+for _finder, name, _ispkg in pkgutil.iter_modules(_models_pkg.__path__):
+    importlib.import_module(f"{_models_pkg.__name__}.{name}")
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
