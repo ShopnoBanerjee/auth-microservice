@@ -1,8 +1,7 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from fastapi.security import OAuth2PasswordRequestForm
-from pydantic import BaseModel
 from app.core.config import settings
 import jwt
 from app.schemas.token import TokenPayload, RefreshTokenRequest
@@ -13,11 +12,14 @@ from app.api.deps import get_db
 from app.schemas.user import UserCreate, UserResponse, UserLogin
 from app.schemas.token import Token
 from app.core.security import get_password_hash, verify_password, create_access_token, create_refresh_token
+from app.core.limiter import limiter
 
 auth_router = APIRouter()
 
 @auth_router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("5/minute")
 async def register_user(
+    request: Request,
     user_in: UserCreate, 
     db: AsyncSession = Depends(get_db)
 ):
@@ -44,7 +46,9 @@ async def register_user(
     return new_user
 
 @auth_router.post("/login", response_model=Token)
+@limiter.limit("5/minute")
 async def login(
+    request: Request,
     login_data: UserLogin,
     db: AsyncSession = Depends(get_db),
 ):
@@ -82,7 +86,9 @@ async def login(
     )
 
 @auth_router.post("/access-token", response_model=Token)
+@limiter.limit("5/minute")
 async def login_access_token(
+    request: Request,
     db: AsyncSession = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends()
 ):
@@ -124,7 +130,9 @@ async def login_access_token(
     )
 
 @auth_router.post("/refresh", response_model=Token)
+@limiter.limit("10/minute")
 async def refresh_token(
+    request: Request,
     refresh_req: RefreshTokenRequest,
     db: AsyncSession = Depends(get_db)
 ):

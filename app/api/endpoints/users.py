@@ -1,22 +1,29 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.schemas.user import UserResponse, UserUpdate, UserPasswordUpdate
 from app.models.user import User
 from app.api.deps import get_current_user, get_db
 from app.core.security import verify_password, get_password_hash
+from app.core.limiter import limiter
 
 router = APIRouter()
 
 @router.get("/me", response_model=UserResponse)
-async def read_users_me(current_user: User = Depends(get_current_user)):
+@limiter.limit("20/minute")
+async def read_users_me(
+    request: Request,
+    current_user: User = Depends(get_current_user)
+):
     """
     Get current user.
     """
     return current_user
 
 @router.put("/me", response_model=UserResponse)
+@limiter.limit("10/minute")
 async def update_user_me(
+    request: Request,
     user_in: UserUpdate,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
@@ -41,7 +48,9 @@ async def update_user_me(
     return current_user
 
 @router.post("/me/password")
+@limiter.limit("5/minute")
 async def change_password(
+    request: Request,
     password_in: UserPasswordUpdate,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
@@ -67,7 +76,9 @@ async def change_password(
     return {"msg": "Password updated successfully"}
 
 @router.delete("/me")
+@limiter.limit("5/minute")
 async def delete_user_me(
+    request: Request,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
