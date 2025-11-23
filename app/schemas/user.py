@@ -11,6 +11,13 @@ class UserCreate(UserBase):
 
 class UserLogin(UserBase):
     password: str
+
+class UserUpdate(BaseModel):
+    email: EmailStr | None = None
+
+class UserPasswordUpdate(BaseModel):
+    current_password: str
+    new_password: str
         
 # Properties to return to client
 class UserResponse(UserBase):
