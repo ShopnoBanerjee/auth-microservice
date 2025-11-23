@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = Field(default="sqlite:///./default.db", description="Database connection URL")
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7  # Refresh tokens last 7 days
     ALGORITHM: str = "RS256"
     
     # RSA Key Paths

@@ -30,6 +30,8 @@ class User(Base):
     
     tier: Mapped[str] = mapped_column(String, default="free", nullable=False)
 
+    hashed_refresh_token: Mapped[str | None] = mapped_column(String, nullable=True)
+
     # Audit Fields
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), 

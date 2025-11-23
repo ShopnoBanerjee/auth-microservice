@@ -19,6 +19,31 @@ def get_password_hash(password: str) -> str:
     """
     return pwd_context.hash(password)
 
+def create_refresh_token(subject: Union[str, Any]) -> tuple[str, str]:
+    """
+    Generates a Refresh JWT and its hash.
+    Returns: (encoded_jwt, hashed_token)
+    """
+    expire = datetime.now(timezone.utc) + timedelta(
+        days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+    )
+    
+    to_encode = {
+        "exp": expire,
+        "iat": datetime.now(timezone.utc),
+        "sub": str(subject),
+        "type": "refresh"
+    }
+    
+    encoded_jwt = jwt.encode(
+        to_encode, 
+        settings.PRIVATE_KEY, 
+        algorithm=settings.ALGORITHM
+    )
+    
+    hashed_token = get_password_hash(encoded_jwt)
+    return encoded_jwt, hashed_token
+
 def create_access_token(subject: Union[str, Any], claims: Dict[str, Any] | None = None) -> str:
     """
     Generates a JWT using the RS256 algorithm and the Private Key.
