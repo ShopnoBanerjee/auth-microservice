@@ -1,12 +1,12 @@
 import uuid
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
 class UserBase(BaseModel):
     email: EmailStr
 
 class UserCreate(UserBase):
-    password: str
+    password: str = Field(..., min_length=8, description="Password must be at least 8 characters long")
     tier: str | None = "free"  # Add tier with default "free"
 
 class UserLogin(UserBase):
@@ -17,7 +17,7 @@ class UserUpdate(BaseModel):
 
 class UserPasswordUpdate(BaseModel):
     current_password: str
-    new_password: str
+    new_password: str = Field(..., min_length=8, description="New password must be at least 8 characters long")
         
 # Properties to return to client
 class UserResponse(UserBase):
