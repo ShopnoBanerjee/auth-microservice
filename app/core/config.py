@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     
     DATABASE_URL: str = Field(default="sqlite:///./default.db", description="Database connection URL")
 
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ALGORITHM: str = "RS256"
+    
     # RSA Key Paths
     PRIVATE_KEY_PATH: Path = Field(default=CERT_DIR / "private.pem")
     PUBLIC_KEY_PATH: Path = Field(default=CERT_DIR / "public.pem")
