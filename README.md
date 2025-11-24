@@ -321,7 +321,7 @@ openssl rsa -in certs/private.pem -pubout -out certs/public.pem
 
 - Python 3.11 or higher
 - PostgreSQL database
-- UV package manager (recommended) or pip
+- uv package manager (recommended) or pip
 
 ### Installation Steps
 
@@ -351,11 +351,17 @@ openssl rsa -in certs/private.pem -pubout -out certs/public.pem
 
 6. **Start the application**:
    ```bash
-   # Development mode
+   # Development mode (using FastAPI CLI)
    fastapi dev app/main.py
    
-   # Production mode
+   # Or using uvicorn directly
+   uvicorn app.main:app --reload
+   
+   # Production mode (using FastAPI CLI)
    fastapi run app/main.py
+   
+   # Or using uvicorn
+   uvicorn app.main:app --host 0.0.0.0 --port 8000
    ```
 
 The API will be available at `http://localhost:8000`
@@ -389,15 +395,15 @@ alembic downgrade -1
 
 Key dependencies from `pyproject.toml`:
 
-- **FastAPI**: Modern web framework for building APIs
-- **SQLAlchemy 2.0**: Async ORM for database operations
-- **Alembic**: Database migration tool
-- **Passlib[argon2]**: Password hashing with Argon2
-- **PyJWT[crypto]**: JWT token encoding/decoding with RS256
-- **AsyncPG**: PostgreSQL async driver
-- **Pydantic Settings**: Configuration management
-- **SlowAPI**: Rate limiting for FastAPI
-- **Python Multipart**: Form data parsing for OAuth2
+- **fastapi**: Modern web framework for building APIs
+- **sqlalchemy 2.0**: Async ORM for database operations
+- **alembic**: Database migration tool
+- **passlib[argon2]**: Password hashing with Argon2
+- **pyjwt[crypto]**: JWT token encoding/decoding with RS256
+- **asyncpg**: PostgreSQL async driver
+- **pydantic-settings**: Configuration management
+- **slowapi**: Rate limiting for FastAPI
+- **python-multipart**: Form data parsing for OAuth2
 
 ## Design Patterns and Architecture
 
