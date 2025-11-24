@@ -333,14 +333,14 @@ openssl rsa -in certs/private.pem -pubout -out certs/public.pem
 
 2. **Install dependencies**:
    ```bash
-   # Using uv (recommended)
+   # Using uv (recommended) - respects pyproject.toml versions
    uv sync
    
-   # Or using pip directly from pyproject.toml
-   pip install alembic asyncpg 'fastapi[standard]' 'passlib[argon2]' \
-     prometheus-fastapi-instrumentator pydantic-settings 'pyjwt[crypto]' \
-     python-multipart slowapi sqlalchemy
+   # Or using pip with pyproject.toml
+   pip install -e .
    ```
+   
+   > **Note**: Using `pip install -e .` ensures all dependencies are installed with the correct versions specified in `pyproject.toml`.
 
 3. **Generate RSA keys** (see RSA Key Generation section above)
 
@@ -474,8 +474,8 @@ The microservice is designed for horizontal scaling:
 
 ## License
 
-[Your License Here]
+This project is licensed under the terms specified by the repository owner.
 
 ## Contributing
 
-[Your Contributing Guidelines Here]
+Contributions are welcome! Please feel free to submit a Pull Request.
