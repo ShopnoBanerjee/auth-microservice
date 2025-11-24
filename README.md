@@ -336,8 +336,10 @@ openssl rsa -in certs/private.pem -pubout -out certs/public.pem
    # Using uv (recommended)
    uv sync
    
-   # Or using pip
-   pip install -e .
+   # Or using pip directly from pyproject.toml
+   pip install alembic asyncpg 'fastapi[standard]' 'passlib[argon2]' \
+     prometheus-fastapi-instrumentator pydantic-settings 'pyjwt[crypto]' \
+     python-multipart slowapi sqlalchemy
    ```
 
 3. **Generate RSA keys** (see RSA Key Generation section above)
@@ -395,8 +397,8 @@ alembic downgrade -1
 
 Key dependencies from `pyproject.toml`:
 
-- **fastapi**: Modern web framework for building APIs
-- **sqlalchemy 2.0**: Async ORM for database operations
+- **fastapi[standard]**: Modern web framework for building APIs (includes uvicorn, pydantic, etc.)
+- **sqlalchemy**: Async ORM for database operations
 - **alembic**: Database migration tool
 - **passlib[argon2]**: Password hashing with Argon2
 - **pyjwt[crypto]**: JWT token encoding/decoding with RS256
@@ -404,6 +406,7 @@ Key dependencies from `pyproject.toml`:
 - **pydantic-settings**: Configuration management
 - **slowapi**: Rate limiting for FastAPI
 - **python-multipart**: Form data parsing for OAuth2
+- **prometheus-fastapi-instrumentator**: Prometheus metrics for monitoring
 
 ## Design Patterns and Architecture
 
