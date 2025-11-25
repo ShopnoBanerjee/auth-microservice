@@ -1,17 +1,5 @@
-from pathlib import Path
 from pydantic_settings import BaseSettings
-from pydantic import Field
-
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-CERT_DIR = ROOT_DIR / "certs"
-
-def load_key_content(key_path: Path) -> str:
-    """Load the content of a key file."""
-    try:
-        with open(key_path, "r") as key_file:
-            return key_file.read()
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Key file not found at path: {key_path}")
+from pydantic import Field, field_validator
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Inwren Auth"
@@ -20,21 +8,17 @@ class Settings(BaseSettings):
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7  # Refresh tokens last 7 days
-    ALGORITHM: str = "RS256"
+    ALGORITHM: str = "EdDSA"
     
-    # RSA Key Paths
-    PRIVATE_KEY_PATH: Path = Field(default=CERT_DIR / "private.pem")
-    PUBLIC_KEY_PATH: Path = Field(default=CERT_DIR / "public.pem")
+    # Keys loaded from environment variables
+    PRIVATE_KEY: str
+    PUBLIC_KEY: str
 
-    @property
-    def PRIVATE_KEY(self) -> str:
-        """The actual content of the RSA private key."""
-        return load_key_content(self.PRIVATE_KEY_PATH)
-
-    @property
-    def PUBLIC_KEY(self) -> str:
-        """The actual content of the RSA public key."""
-        return load_key_content(self.PUBLIC_KEY_PATH)
+    @field_validator("PRIVATE_KEY", "PUBLIC_KEY", mode="before")
+    @classmethod
+    def format_key(cls, v: str) -> str:
+        # Replace escaped newlines with actual newlines
+        return v.replace("\\n", "\n")
 
     class Config:
         env_file = ".env"
