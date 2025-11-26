@@ -30,6 +30,11 @@ class User(Base):
     
     tier: Mapped[str] = mapped_column(String, default="free", nullable=False)
 
+    full_name: Mapped[str | None] = mapped_column(String, nullable=True)
+    avatar_url: Mapped[str | None] = mapped_column(String, nullable=True)
+    email_verified: Mapped[bool] = mapped_column(Boolean, default=False, index=True) #TODO:need to setup email verification
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
     hashed_refresh_token: Mapped[str | None] = mapped_column(String, nullable=True)
 
     # Audit Fields
