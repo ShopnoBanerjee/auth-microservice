@@ -37,6 +37,8 @@ async def register_user(
         email=user_in.email,
         hashed_password=get_password_hash(user_in.password),
         tier=user_in.tier or "free",
+        full_name=user_in.full_name,
+        avatar_url=user_in.avatar_url,
     )
     
     db.add(new_user)

@@ -1,16 +1,19 @@
 import uuid
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, ConfigDict, Field
+from typing import Optional
 
 class UserBase(BaseModel):
     email: EmailStr
     full_name: str | None = None
     avatar_url: str | None = None
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    email: EmailStr
     password: str = Field(..., min_length=8, description="Password must be at least 8 characters long")
-    tier: str | None = "free"
-
+    full_name: str
+    avatar_url: Optional[str] = None
+    tier: Optional[str] = "free"
 
 class UserLogin(UserBase):
     password: str
